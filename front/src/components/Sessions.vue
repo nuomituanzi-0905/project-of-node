@@ -61,6 +61,7 @@ async function revoke(jti) {
   try {
     const resp = await revokeSession(jti);
     if (resp && resp.isCurrent) {
+      // current session revoked — redirect to login
       clearAccessToken();
       router.push('/login');
       return;
@@ -74,6 +75,7 @@ async function revoke(jti) {
   }
 }
 
+// handle incoming SSE messages
 function handleEvent(e) {
   try {
     const payload = JSON.parse(e.data);
@@ -81,12 +83,15 @@ function handleEvent(e) {
 
     if (payload.type === 'session_revoked') {
       if (payload.isCurrent) {
-        alert('Your session was revoked from another device. Redirecting to login.');
+        // current session was revoked elsewhere
+        alert('Your session was revoked or logged out from another device. You will be redirected to login.');
         clearAccessToken();
         router.push('/login');
         return;
       } else {
+        // another session revoked — refresh list and notify
         load();
+        // optional: show a subtle notification
         console.info('A session was revoked:', payload.jti);
       }
     } else if (payload.type === 'all_revoked') {
@@ -96,8 +101,12 @@ function handleEvent(e) {
         router.push('/login');
         return;
       } else {
+        // other sessions revoked: refresh
         load();
       }
+    } else {
+      // other event types
+      console.debug('SSE payload', payload);
     }
   } catch (err) {
     console.warn('Failed to parse SSE event', err);
@@ -106,11 +115,15 @@ function handleEvent(e) {
 
 onMounted(async () => {
   await load();
+
+  // open EventSource to listen to server events. EventSource sends cookies for same-origin.
+  // If your client and server are cross-origin, ensure cookies are allowed & EventSource supports credentials.
   const url = '/api/auth/events';
-  evtSource = new EventSource(url, { withCredentials: true });
+  evtSource = new EventSource(url, { withCredentials: true }); // note: some browsers ignore withCredentials; same-origin recommended
   evtSource.onmessage = handleEvent;
   evtSource.onerror = (err) => {
     console.warn('SSE error', err);
+    // optionally try to reconnect after a delay
   };
 });
 

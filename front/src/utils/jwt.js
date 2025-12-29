@@ -1,3 +1,4 @@
+// small helper to decode JWT payload (not used for verification)
 export function parseJwt(token) {
   if (!token) return null;
   const p = token.split('.');
