@@ -1,0 +1,17 @@
+FROM node:18-alpine
+
+WORKDIR /app
+
+# Install global dev tools
+RUN npm install -g nodemon
+
+# Copy package files and install deps
+COPY package*.json ./
+RUN npm ci
+
+# Copy rest of files (mounted in dev via volume)
+COPY . .
+
+EXPOSE 4000
+
+CMD ["npm", "run", "dev"]

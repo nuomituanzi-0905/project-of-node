@@ -36,3 +36,27 @@ CORS & cookies
 Notes
 - The backend uses a JSON file `server/data/db.json` for simple storage in demos. Replace with a real DB for production.
 - Use HTTPS and set COOKIE_SECURE=true in production.
+
+
+
+Trust proxy note
+----------------
+If you run the server behind a reverse proxy (for example nginx in the production docker-compose),
+and you want Express to use `X-Forwarded-*` headers (so `req.ip` reflects the real client IP),
+set the `TRUST_PROXY` environment variable explicitly to a truthy value:
+
+- Add `TRUST_PROXY=true` to `server/.env`, or
+- Add `TRUST_PROXY=true` to the `server.environment` section in your docker-compose.
+
+Example docker-compose `server` environment (production):
+    environment:
+      - NODE_ENV=production
+      - PORT=4000
+      - REDIS_URL=redis://redis:6379
+      - FRONTEND_URL=http://localhost
+      - JWT_SECRET=change_this_to_a_strong_secret
+      - COOKIE_SECURE=true
+      - TRUST_PROXY=true
+
+Important: the server will only enable trust proxy when `TRUST_PROXY` is explicitly set.
+This prevents accidentally trusting forwarded headers in environments where no reverse proxy is used.

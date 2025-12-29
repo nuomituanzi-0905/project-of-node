@@ -16,11 +16,31 @@ const adminRoutes = require('./routes/admin');
 const PORT = process.env.PORT || 4000;
 const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:5173';
 
+/**
+ * parseBoolEnv("true"|"1"|"yes") => true, else false
+ */
+function parseBoolEnv(v) {
+  if (v === undefined || v === null) return false;
+  const s = String(v).trim().toLowerCase();
+  return s === '1' || s === 'true' || s === 'yes';
+}
+
 async function main() {
   await initDbIfNeeded();
   await createRedisClient();
 
   const app = express();
+
+  // Trust proxy only when TRUST_PROXY is explicitly set
+  const trustProxyEnv = process.env.TRUST_PROXY;
+  const enableTrustProxy = parseBoolEnv(trustProxyEnv);
+
+  if (enableTrustProxy) {
+    app.set('trust proxy', true);
+    console.log('Express trust proxy is ENABLED (req.ip and X-Forwarded-* will be trusted)');
+  } else {
+    console.log('Express trust proxy is DISABLED (req.ip will not trust X-Forwarded-*)');
+  }
 
   app.use(cors({
     origin: FRONTEND_URL,
