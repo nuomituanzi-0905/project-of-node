@@ -1,0 +1,45 @@
+{
+  "users": [
+    {
+      "id": "replace-on-first-run",
+      "username": "admin",
+      "password": "replace-on-first-run",
+      "name": "Administrator",
+      "roles": [
+        "admin"
+      ],
+      "dataPermissions": [
+        "*"
+      ]
+    }
+  ],
+  "roles": [
+    {
+      "name": "admin",
+      "description": "Full access"
+    },
+    {
+      "name": "user",
+      "description": "Normal user"
+    }
+  ],
+  "menus": [
+    {
+      "id": "dashboard",
+      "title": "Dashboard",
+      "route": "/dashboard",
+      "roles": [
+        "admin",
+        "user"
+      ]
+    },
+    {
+      "id": "admin",
+      "title": "Admin Panel",
+      "route": "/admin",
+      "roles": [
+        "admin"
+      ]
+    }
+  ]
+}
