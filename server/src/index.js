@@ -9,7 +9,7 @@ dotenv.config();
 const { initDbIfNeeded } = require('./services/db');
 const { createRedisClient } = require('./config/redis');
 
-const authRoutes = require('./routes/auth');
+const authRoutes = require('./middleware/auth');
 const userRoutes = require('./routes/user');
 const adminRoutes = require('./routes/admin');
 

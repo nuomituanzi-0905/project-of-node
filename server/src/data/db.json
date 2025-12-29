@@ -1,0 +1,45 @@
+{
+  "users": [
+    {
+      "id": "6d003338-21a9-47d4-b9b4-673460e5c025",
+      "username": "admin",
+      "password": "$2a$10$uxSXFZcBcO0HIjhdW5fXye3bwO6NIWLS5SbGQoS1cebsQJrGnR3q2",
+      "name": "Administrator",
+      "roles": [
+        "admin"
+      ],
+      "dataPermissions": [
+        "*"
+      ]
+    }
+  ],
+  "roles": [
+    {
+      "name": "admin",
+      "description": "Full access"
+    },
+    {
+      "name": "user",
+      "description": "Normal user"
+    }
+  ],
+  "menus": [
+    {
+      "id": "dashboard",
+      "title": "Dashboard",
+      "route": "/dashboard",
+      "roles": [
+        "admin",
+        "user"
+      ]
+    },
+    {
+      "id": "admin",
+      "title": "Admin Panel",
+      "route": "/admin",
+      "roles": [
+        "admin"
+      ]
+    }
+  ]
+}
